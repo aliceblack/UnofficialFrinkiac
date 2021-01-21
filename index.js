@@ -18,6 +18,8 @@ app.get('/bot', (req, res) => {
     var botToken=process.env.BOT_TOKEN;
     var website="https://api.telegram.org/bot".concat(botToken);
 
+    console.log(req.body);
+
     var chatId=req.body["message"]["chat"]["id"];
     var name=req.body["message"]["chat"]["first_name"];
     var text=req.body["message"]["text"];
