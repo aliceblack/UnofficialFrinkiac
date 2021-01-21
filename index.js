@@ -83,7 +83,7 @@ function getRandomFromFrinkiac(){
         .then(response => {
             var longCaption = "";
             response.data.Subtitles.forEach(element => {
-                longCaption=longCaption+concat(element.Content).concat("\n")
+                longCaption=longCaption.concat(element.Content).concat("\n")
             });
             var episode = response.data.Frame.Episode;
             var timeStamp = response.data.Frame.Timestamp;
