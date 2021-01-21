@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.get('/bot', (req, res) => {
+app.post('/bot', (req, res) => {
     var botToken=process.env.BOT_TOKEN;
     var website="https://api.telegram.org/bot".concat(botToken);
 
@@ -24,10 +24,10 @@ app.get('/bot', (req, res) => {
     var name=req.body["message"]["chat"]["first_name"];
     var text=req.body["message"]["text"];
 
-    getRandomMemeAsBase64()
+    getRandomMemeAsPhoto()
     .then(response=>{
-            var base64 = response;
-            var url = website+"/sendphoto?chat_id="+chatId+"&photo="+base64;
+            var photo = response;
+            var url = website+"/sendphoto?chat_id="+chatId+"&photo="+photo;
             sendMemeToTelegram(url)
             .then(response=>{
                 res.send();
@@ -56,13 +56,13 @@ function sendMemeToTelegram(url){
     });
 }
 
-function getRandomMemeAsBase64(){
+function getRandomMemeAsPhoto(){
     return new Promise( (resolve, reject) =>{
         getRandomFromFrinkiac()
         .then(response=>{
             const buff = Buffer.from(response.caption, 'utf-8');
             var captionBase64 = buff.toString('base64');
-            getBase64MemeFromFrinkiac(response.episode, response.timeStamp, captionBase64)
+            getMemeFromFrinkiac(response.episode, response.timeStamp, captionBase64)
             .then(meme=>{
                 resolve(meme);
             })
@@ -95,17 +95,17 @@ function getRandomFromFrinkiac(){
     });
 }
 
-function getBase64MemeFromFrinkiac(episode,timestamp,captionInBase64){
+function getMemeFromFrinkiac(episode,timestamp,captionInBase64){
     return new Promise( (resolve, reject) =>{
         var url = 'https://frinkiac.com/meme/'+episode+'/'+timestamp+'.jpg?b64lines='+captionInBase64;
         axios.get(url, {
             responseType: 'arraybuffer'
         })
         .then(response => {
-            var mimetype="image/jpeg";
+            /*var mimetype="image/jpeg";
             var base64 = Buffer.from(response.data, 'binary').toString('base64');
-            var imageBase64 = "data:"+mimetype+";base64,"+base64;
-            resolve(base64);
+            var imageBase64 = "data:"+mimetype+";base64,"+base64;*/
+            resolve(url);
         })
         .catch(error => {
             resolve(error)
